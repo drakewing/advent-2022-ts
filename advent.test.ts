@@ -2,13 +2,17 @@ import { expect, test } from "@jest/globals";
 
 import { prepInput } from "./solutions/helpers";
 import { d01p1, d01p2 } from "./solutions/day01";
+import { d02p1, d02p2 } from "./solutions/day02";
+// import { d03p1, d03p2 } from "./solutions/day03";
+// import { d04p1, d04p2 } from "./solutions/day04";
+// import { d05p1, d05p2 } from "./solutions/day05";
 import { d06p1, d06p2 } from "./solutions/day06";
 
 
 test('advent solutions', () => {
   expect(d01p1(prepInput("input/day01.txt"))).toBe(66616);
   expect(d01p2(prepInput("input/day01.txt"))).toBe(199172);
-  // expect(d02p1(prepInput("input/day02.txt"))).toBe(10624);
+  expect(d02p1(prepInput("input/day02.txt"))).toBe(10624);
   // expect(d02p2(prepInput("input/day02.txt"))).toBe(14060);
   // expect(d03p1(prepInput("input/day03.txt"))).toBe(7863);
   // expect(d03p2(prepInput("input/day03.txt"))).toBe(2488);
