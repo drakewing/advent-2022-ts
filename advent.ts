@@ -10,7 +10,7 @@ import { d06p1, d06p2 } from "./solutions/day06";
 console.log(`day 01, part 1: ${d01p1(prepInput("input/day01.txt"))}`);
 console.log(`day 01, part 2: ${d01p2(prepInput("input/day01.txt"))}`);
 console.log(`day 02, part 1: ${d02p1(prepInput("input/day02.txt"))}`);
-// console.log(`day 02, part 2: ${d02p2(prepInput("input/day02.txt"))}`);
+console.log(`day 02, part 2: ${d02p2(prepInput("input/day02.txt"))}`);
 // console.log(`day 03, part 1: ${d03p1(prepInput("input/day03.txt"))}`);
 // console.log(`day 03, part 2: ${d03p2(prepInput("input/day03.txt"))}`);
 // console.log(`day 04, part 1: ${d04p1(prepInput("input/day04.txt"))}`);

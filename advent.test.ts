@@ -13,7 +13,7 @@ test('advent solutions', () => {
   expect(d01p1(prepInput("input/day01.txt"))).toBe(66616);
   expect(d01p2(prepInput("input/day01.txt"))).toBe(199172);
   expect(d02p1(prepInput("input/day02.txt"))).toBe(10624);
-  // expect(d02p2(prepInput("input/day02.txt"))).toBe(14060);
+  expect(d02p2(prepInput("input/day02.txt"))).toBe(14060);
   // expect(d03p1(prepInput("input/day03.txt"))).toBe(7863);
   // expect(d03p2(prepInput("input/day03.txt"))).toBe(2488);
   // expect(d04p1(prepInput("input/day04.txt"))).toBe(507);

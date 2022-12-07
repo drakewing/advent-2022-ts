@@ -10,9 +10,9 @@ enum Player {
 }
 
 enum Outcome {
-  Win,
-  Loss,
-  Draw,
+  Loss = "X",
+  Draw = "Y",
+  Win = "Z",
 }
 
 type Game = {
@@ -40,9 +40,31 @@ const OutcomeMap = {
   },
 }
 
+// their move -> desired outcome -> my move
+const MoveMap = {
+  [Move.Rock]: {
+    [Outcome.Draw]: Move.Rock,
+    [Outcome.Win]: Move.Paper,
+    [Outcome.Loss]: Move.Scissors,
+  },
+  [Move.Paper]: {
+    [Outcome.Draw]: Move.Paper,
+    [Outcome.Win]: Move.Scissors,
+    [Outcome.Loss]: Move.Rock,
+  },
+  [Move.Scissors]: {
+    [Outcome.Draw]: Move.Scissors,
+    [Outcome.Win]: Move.Rock,
+    [Outcome.Loss]: Move.Paper,
+  },
+}
+
 const getOutcome = (game: Game): Outcome => {
   return OutcomeMap[game.them][game.me];
+}
 
+const outcomeToMove = (outcome: Outcome, theirMove: Move): Move => {
+  return MoveMap[theirMove][outcome];
 }
 
 const strToMove = (input: string): Move => {
@@ -68,6 +90,19 @@ const buildGames = (input: string[]): Game[] => {
 
   return output;
 }
+
+const buildGames2 = (input: string[]): Game[] => {
+  const output: Game[] = [];
+
+  for (const line of input) {
+    const parts = line.split(" ");
+    const theirMove = strToMove(parts[0])
+    const myMove = outcomeToMove(parts[1] as Outcome, theirMove);
+    output.push({ them: theirMove, me: myMove });
+  };
+
+  return output;
+};
 
 const scoreGame = (game: Game): number => {
   let score = 0;
@@ -108,5 +143,12 @@ export const d02p1 = (input: string[]): number => {
 }
 
 export const d02p2 = (input: string[]): number => {
-  return 0;
+  const games = buildGames2(input);
+
+  let score = 0;
+  for (const game of games) {
+    score += scoreGame(game);
+  }
+
+  return score;
 }
