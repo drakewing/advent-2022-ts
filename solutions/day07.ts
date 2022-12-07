@@ -68,19 +68,20 @@ const commandLoop = (wd: FsNode, commands: string[]) => {
   }
 }
 
+// optionally track sizes smaller than a given num - kind of cluttered
+const findNodeSize = (node: FsNode, dirSizes?: number[], n?: number): number => {
+  if (node.kind === NodeType.File) return node.size;
+
+  const size = node.children.reduce((acc, child) => acc + findNodeSize(child, dirSizes, n), 0);
+  if (n && dirSizes && size < n) {
+    dirSizes.push(size);
+  }
+  return size;
+}
+
 const sumDirsLessThan = (root: FsNode, n: number): number => {
   const dirSizes: number[] = [];
-
-  const findNodeSize = (node: FsNode): number => {
-    if (node.kind === NodeType.File) return node.size;
-
-    const size = node.children.reduce((acc, child) => acc + findNodeSize(child), 0);
-    if (size < n) {
-      dirSizes.push(size);
-    }
-    return size;
-  }
-  findNodeSize(root);
+  findNodeSize(root, dirSizes, n);
   return dirSizes.reduce((acc, s) => acc + s, 0);
 }
 
@@ -97,5 +98,24 @@ export const d07p1 = (input: string[]): number => {
 }
 
 export const d07p2 = (input: string[]): number => {
-  return 0;
+  const root: FsNode = {
+    kind: NodeType.Directory,
+    name: "/",
+    size: 0,
+    children: [],
+  };
+  let wd = root;
+  commandLoop(wd, input);
+
+  const dirSizes: number[] = [];
+  const maxSpace = 70000000;
+  const usedSpace = findNodeSize(root, dirSizes, maxSpace);
+  const neededSpace = 30000000 - (maxSpace - usedSpace);
+
+  dirSizes.sort((a, b) => a - b);
+  for (const s of dirSizes) {
+    if (s >= neededSpace) return s
+  }
+
+  return -1;
 }

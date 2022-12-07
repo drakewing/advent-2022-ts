@@ -7,6 +7,7 @@ import { d02p1, d02p2 } from "./solutions/day02";
 // import { d04p1, d04p2 } from "./solutions/day04";
 // import { d05p1, d05p2 } from "./solutions/day05";
 import { d06p1, d06p2 } from "./solutions/day06";
+import { d07p1, d07p2 } from "./solutions/day07";
 
 
 test('advent solutions', () => {
@@ -22,4 +23,6 @@ test('advent solutions', () => {
   // expect(d05p2(prepInput("input/day05.txt"))).toBe("ZFSJBPRFP");
   expect(d06p1(prepInput("input/day06.txt")[0])).toBe(1275);
   expect(d06p2(prepInput("input/day06.txt")[0])).toBe(3605);
+  expect(d07p1(prepInput("input/day07.txt"))).toBe(1118405);
+  expect(d07p2(prepInput("input/day07.txt"))).toBe(12545514);
 });
