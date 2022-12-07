@@ -4,11 +4,6 @@ enum Move {
   Scissors,
 }
 
-enum Player {
-  Them,
-  Me,
-}
-
 enum Outcome {
   Loss = "X",
   Draw = "Y",
