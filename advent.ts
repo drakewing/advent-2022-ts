@@ -1,6 +1,6 @@
-import { prepInput } from "./helpers";
-import { d01p1, d01p2 } from "./day01";
-import { d06p1, d06p2 } from "./day06";
+import { prepInput } from "./solutions/helpers";
+import { d01p1, d01p2 } from "./solutions/day01";
+import { d06p1, d06p2 } from "./solutions/day06";
 
 
 // TODO: add tests using known answers

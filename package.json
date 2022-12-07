@@ -2,9 +2,9 @@
   "name": "advent-2022-ts",
   "version": "1.0.0",
   "description": "",
-  "main": "build/input.js",
+  "main": "build/advent.js",
   "scripts": {
-    "start": "tsc && node build/index.js",
+    "start": "tsc && node build/advent.js",
     "test": "jest"
   },
   "author": "Matt Drake",
