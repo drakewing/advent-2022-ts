@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+
 export const sumNumArray = (nums: number[]): number => {
   let sum = 0;
   for (const num of nums) {
@@ -21,3 +23,11 @@ export const convStrToNum = (input: string[], start?: number, end?: number): num
 
   return output;
 }
+
+// split input file into array of lines
+export const prepInput = (path: string): string[] => {
+  return readFileSync(path)
+    .toString('utf-8')
+    .split("\n")
+    .slice(0, -1);
+};
