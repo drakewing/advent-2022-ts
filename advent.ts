@@ -7,7 +7,6 @@ import { d03p1, d03p2 } from "./solutions/day03";
 import { d06p1, d06p2 } from "./solutions/day06";
 import { d07p1, d07p2 } from "./solutions/day07";
 
-
 console.log(`day 01, part 1: ${d01p1(prepInput("input/day01.txt"))}`);
 console.log(`day 01, part 2: ${d01p2(prepInput("input/day01.txt"))}`);
 console.log(`day 02, part 1: ${d02p1(prepInput("input/day02.txt"))}`);

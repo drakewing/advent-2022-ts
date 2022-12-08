@@ -3,17 +3,28 @@ interface ruck {
   compartmentB: string[];
 }
 
-const findCommonItem = (r: ruck): string => {
-  const set = new Set(r.compartmentA);
+// assume len(compartments) > 1, with only 1 common item.
+const findCommonItem = (compartments: string[][]): string => {
+  const sets = compartments
+    .slice(0, compartments.length - 1)
+    .map((c) => new Set(c));
 
-  for (const item of r.compartmentB) {
-    if (set.has(item)) {
+  const last = compartments[compartments.length - 1];
+  for (const item of last) {
+    let failed = false;
+    for (const set of sets) {
+      if (!set.has(item)) {
+        failed = true;
+      }
+    }
+
+    if (!failed) {
       return item;
     }
   }
 
   return "";
-}
+};
 
 const buildRucks = (input: string[]): ruck[] => {
   const buildRuck = (input: string): ruck => {
@@ -21,8 +32,8 @@ const buildRucks = (input: string[]): ruck[] => {
     return {
       compartmentA: input.substring(0, mid).split(""),
       compartmentB: input.substring(mid).split(""),
-    }
-  }
+    };
+  };
 
   const rucks: ruck[] = [];
   for (const line of input) {
@@ -30,7 +41,7 @@ const buildRucks = (input: string[]): ruck[] => {
   }
 
   return rucks;
-}
+};
 
 // assumes 1 char
 const itemToPriority = (item: string): number => {
@@ -40,20 +51,30 @@ const itemToPriority = (item: string): number => {
   }
 
   return val - 64 + 26;
-}
+};
 
 export const d03p1 = (input: string[]): number => {
   const rucks = buildRucks(input);
 
   let sum = 0;
   for (const r of rucks) {
-    const item = findCommonItem(r);
+    const item = findCommonItem([r.compartmentA, r.compartmentB]);
     sum += itemToPriority(item);
   }
 
   return sum;
-}
+};
 
 export const d03p2 = (input: string[]): number => {
-  return 0;
-}
+  let sum = 0;
+  for (let i = 0; i < input.length; i = i + 3) {
+    const item = findCommonItem([
+      input[i].split(""),
+      input[i + 1].split(""),
+      input[i + 2].split(""),
+    ]);
+    sum += itemToPriority(item);
+  }
+
+  return sum;
+};
