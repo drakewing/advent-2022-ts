@@ -25,6 +25,10 @@ const isFullyContained = (a: range, b: range): boolean => {
   return a.lower <= b.lower && a.upper >= b.upper;
 };
 
+const isOverlap = (a: range, b: range): boolean => {
+  return ((a.lower <= b.upper && a.lower >= b.upper) || (a.upper >= b.lower && a.upper <= b.upper));
+};
+
 export const d04p1 = (input: string[]): number => {
   const pairs = input.map(str => splitRanges(str));
   let count = 0;
@@ -39,5 +43,15 @@ export const d04p1 = (input: string[]): number => {
 };
 
 export const d04p2 = (input: string[]): number => {
-  return 0;
-};
+  const pairs = input.map(str => splitRanges(str));
+  let count = 0;
+
+  for (const pair of pairs) {
+    if (isOverlap(pair.left, pair.right) || isOverlap(pair.right, pair.left)) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
