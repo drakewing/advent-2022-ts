@@ -14,18 +14,19 @@ interface FsNode {
 // surely, all dirs are present
 const cd = (dir: string, wd: FsNode): FsNode => {
   // up one?
-  if (dir === ".." && wd.parent) {
+  if (dir === '..' && wd.parent) {
     return wd.parent;
   }
 
   // down one?
-  if (dir !== "/") {
+  if (dir !== '/') {
     return wd.children.find((child) => child.name === dir) || wd;
   }
 
   // back to root
-  while (wd.parent) {
-    wd = wd.parent;
+  let cur = wd.parent;
+  while (cur) {
+    cur = cur.parent;
   }
   return wd;
 };
@@ -37,54 +38,57 @@ const addIfNew = (cand: FsNode, wd: FsNode) => {
 };
 
 const commandLoop = (wd: FsNode, commands: string[]) => {
-  for (const cmd of commands) {
-    const parts = cmd.split(" ");
-    if (parts[1] === "cd") {
-      wd = cd(parts[2], wd);
-      continue;
+  let cur = wd;
+
+  commands.forEach((cmd) => {
+    const parts = cmd.split(' ');
+    if (parts[1] === 'cd') {
+      cur = cd(parts[2], cur);
+      return;
     }
 
-    if (parts[1] === "ls") {
-      continue;
+    if (parts[1] === 'ls') {
+      return;
     }
 
-    if (parts[0] === "dir") {
+    if (parts[0] === 'dir') {
       addIfNew(
         {
           kind: NodeType.Directory,
           name: parts[1],
           size: 0,
-          parent: wd,
+          parent: cur,
           children: [],
         },
-        wd
+        cur,
       );
-    } else {
-      addIfNew(
-        {
-          kind: NodeType.File,
-          name: parts[1],
-          size: parseInt(parts[0]),
-          parent: wd,
-          children: [],
-        },
-        wd
-      );
+      return;
     }
-  }
+
+    addIfNew(
+      {
+        kind: NodeType.File,
+        name: parts[1],
+        size: parseInt(parts[0], 10),
+        parent: cur,
+        children: [],
+      },
+      cur,
+    );
+  });
 };
 
 // optionally track sizes smaller than a given num - kind of cluttered
 const findNodeSize = (
   node: FsNode,
   dirSizes?: number[],
-  n?: number
+  n?: number,
 ): number => {
   if (node.kind === NodeType.File) return node.size;
 
   const size = node.children.reduce(
     (acc, child) => acc + findNodeSize(child, dirSizes, n),
-    0
+    0,
   );
   if (n && dirSizes && size < n) {
     dirSizes.push(size);
@@ -101,11 +105,11 @@ const sumDirsLessThan = (root: FsNode, n: number): number => {
 export const d07p1 = (input: string[]): number => {
   const root: FsNode = {
     kind: NodeType.Directory,
-    name: "/",
+    name: '/',
     size: 0,
     children: [],
   };
-  let wd = root;
+  const wd = root;
   commandLoop(wd, input);
   return sumDirsLessThan(root, 100000);
 };
@@ -113,11 +117,11 @@ export const d07p1 = (input: string[]): number => {
 export const d07p2 = (input: string[]): number => {
   const root: FsNode = {
     kind: NodeType.Directory,
-    name: "/",
+    name: '/',
     size: 0,
     children: [],
   };
-  let wd = root;
+  const wd = root;
   commandLoop(wd, input);
 
   const dirSizes: number[] = [];
@@ -126,9 +130,5 @@ export const d07p2 = (input: string[]): number => {
   const neededSpace = 30000000 - (maxSpace - usedSpace);
 
   dirSizes.sort((a, b) => a - b);
-  for (const s of dirSizes) {
-    if (s >= neededSpace) return s;
-  }
-
-  return -1;
+  return dirSizes.find((sz) => sz >= neededSpace) || -1;
 };

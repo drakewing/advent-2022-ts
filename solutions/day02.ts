@@ -11,10 +11,9 @@ enum Outcome {
 }
 
 type Game = {
-  them: Move,
-  me: Move,
-}
-
+  them: Move;
+  me: Move;
+};
 
 // their move -> my move -> outcome
 const OutcomeMap = {
@@ -33,7 +32,7 @@ const OutcomeMap = {
     [Move.Paper]: Outcome.Loss,
     [Move.Scissors]: Outcome.Draw,
   },
-}
+};
 
 // their move -> desired outcome -> my move
 const MoveMap = {
@@ -52,98 +51,52 @@ const MoveMap = {
     [Outcome.Win]: Move.Rock,
     [Outcome.Loss]: Move.Paper,
   },
-}
-
-const getOutcome = (game: Game): Outcome => {
-  return OutcomeMap[game.them][game.me];
-}
-
-const outcomeToMove = (outcome: Outcome, theirMove: Move): Move => {
-  return MoveMap[theirMove][outcome];
-}
-
-const strToMove = (input: string): Move => {
-  switch (input) {
-    case "A":
-    case "X":
-      return Move.Rock;
-    case "B":
-    case "Y":
-      return Move.Paper;
-    default:
-      return Move.Scissors;
-  }
-}
-
-const buildGames = (input: string[]): Game[] => {
-  const output: Game[] = [];
-
-  for (const line of input) {
-    const parts = line.split(" ");
-    output.push({ them: strToMove(parts[0]), me: strToMove(parts[1]) });
-  }
-
-  return output;
-}
-
-const buildGames2 = (input: string[]): Game[] => {
-  const output: Game[] = [];
-
-  for (const line of input) {
-    const parts = line.split(" ");
-    const theirMove = strToMove(parts[0])
-    const myMove = outcomeToMove(parts[1] as Outcome, theirMove);
-    output.push({ them: theirMove, me: myMove });
-  };
-
-  return output;
 };
 
-const scoreGame = (game: Game): number => {
-  let score = 0;
+const StrMoveMap: { [key: string]: Move } = {
+  A: Move.Rock,
+  X: Move.Rock,
+  B: Move.Paper,
+  Y: Move.Paper,
+  C: Move.Scissors,
+  Z: Move.Scissors,
+};
 
-  switch (game.me) {
-    case Move.Rock:
-      score += 1;
-      break;
-    case Move.Paper:
-      score += 2;
-      break;
-    default:
-      score += 3;
-  }
+const MoveScoreMap = {
+  [Move.Rock]: 1,
+  [Move.Paper]: 2,
+  [Move.Scissors]: 3,
+};
 
-  switch (getOutcome(game)) {
-    case Outcome.Win:
-      score += 6;
-      break;
-    case Outcome.Draw:
-      score += 3;
-      break;
-  }
+const OutcomeScoreMap = {
+  [Outcome.Win]: 6,
+  [Outcome.Draw]: 3,
+  [Outcome.Loss]: 0,
+};
 
-  return score;
-}
+const buildGames1 = (input: string[]): Game[] =>
+  input.map((line) => {
+    const parts = line.split(" ");
+    return { them: StrMoveMap[parts[0]], me: StrMoveMap[parts[1]] };
+  });
 
+const buildGames2 = (input: string[]): Game[] =>
+  input.map((line) => {
+    const parts = line.split(" ");
+    const theirMove = StrMoveMap[parts[0]];
+    const myMove = MoveMap[theirMove][parts[1] as Outcome];
+    return { them: theirMove, me: myMove };
+  });
+
+const scoreGame = (game: Game): number =>
+  MoveScoreMap[game.me] + OutcomeScoreMap[OutcomeMap[game.them][game.me]];
 
 export const d02p1 = (input: string[]): number => {
-  const games = buildGames(input);
-
-  let score = 0;
-  for (const game of games) {
-    score += scoreGame(game);
-  }
-
-  return score;
-}
+  const games = buildGames1(input);
+  return games.reduce((acc, game) => acc + scoreGame(game), 0);
+};
 
 export const d02p2 = (input: string[]): number => {
   const games = buildGames2(input);
-
-  let score = 0;
-  for (const game of games) {
-    score += scoreGame(game);
-  }
-
-  return score;
-}
+  return games.reduce((acc, game) => acc + scoreGame(game), 0);
+};

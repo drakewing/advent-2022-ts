@@ -1,46 +1,25 @@
-interface ruck {
+interface Ruck {
   compartmentA: string[];
   compartmentB: string[];
 }
 
-// assume len(compartments) > 1, with only 1 common item.
-const findCommonItem = (compartments: string[][]): string => {
-  const sets = compartments
-    .slice(0, compartments.length - 1)
-    .map((c) => new Set(c));
+const findCommonItems = (compartments: string[][]): Set<string> =>
+  compartments
+    .map((c) => new Set(c))
+    .reduce(
+      (common, cur) => new Set([...common].filter((item) => cur.has(item)))
+    );
 
-  const last = compartments[compartments.length - 1];
-  for (const item of last) {
-    let failed = false;
-    for (const set of sets) {
-      if (!set.has(item)) {
-        failed = true;
-      }
-    }
-
-    if (!failed) {
-      return item;
-    }
-  }
-
-  return "";
-};
-
-const buildRucks = (input: string[]): ruck[] => {
-  const buildRuck = (input: string): ruck => {
-    const mid = input.length / 2;
+const buildRucks = (input: string[]): Ruck[] => {
+  const buildRuck = (line: string): Ruck => {
+    const mid = line.length / 2;
     return {
-      compartmentA: input.substring(0, mid).split(""),
-      compartmentB: input.substring(mid).split(""),
+      compartmentA: line.substring(0, mid).split(""),
+      compartmentB: line.substring(mid).split(""),
     };
   };
 
-  const rucks: ruck[] = [];
-  for (const line of input) {
-    rucks.push(buildRuck(line));
-  }
-
-  return rucks;
+  return input.map((line) => buildRuck(line));
 };
 
 // assumes 1 char
@@ -53,26 +32,24 @@ const itemToPriority = (item: string): number => {
   return val - 64 + 26;
 };
 
-export const d03p1 = (input: string[]): number => {
-  const rucks = buildRucks(input);
-
-  let sum = 0;
-  for (const r of rucks) {
-    const item = findCommonItem([r.compartmentA, r.compartmentB]);
-    sum += itemToPriority(item);
-  }
-
-  return sum;
-};
+export const d03p1 = (input: string[]): number =>
+  buildRucks(input).reduce((acc, ruck) => {
+    const item = Array.from(
+      findCommonItems([ruck.compartmentA, ruck.compartmentB])
+    )[0];
+    return acc + itemToPriority(item);
+  }, 0);
 
 export const d03p2 = (input: string[]): number => {
   let sum = 0;
-  for (let i = 0; i < input.length; i = i + 3) {
-    const item = findCommonItem([
-      input[i].split(""),
-      input[i + 1].split(""),
-      input[i + 2].split(""),
-    ]);
+  for (let i = 0; i < input.length; i += 3) {
+    const item = Array.from(
+      findCommonItems([
+        input[i].split(""),
+        input[i + 1].split(""),
+        input[i + 2].split(""),
+      ])
+    )[0];
     sum += itemToPriority(item);
   }
 

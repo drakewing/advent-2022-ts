@@ -2,32 +2,29 @@
 //      N
 // <- W x E
 //      S
-interface maxHeightByDir {
+interface MaxHeightByDir {
   north: number;
   east: number;
   south: number;
   west: number;
 }
 
-const buildGrid = (input: string[]): number[][] => {
-  const output: number[][] = [];
-  for (const line of input) {
-    output.push(line.split("").map((s) => parseInt(s)));
-  }
-  return output;
-};
+const buildGrid = (input: string[]): number[][] =>
+  input.map((line) => line.split("").map((s) => parseInt(s, 10)));
 
-const buildEmptyConstraintGrid = (grid: number[][]): maxHeightByDir[][] => {
-  const output: maxHeightByDir[][] = [];
-  for (const row of grid) {
-    output.push(
-      row.map((cell) => ({ north: -1, east: -1, south: -1, west: -1 }))
-    );
-  }
-  return output;
-};
+const buildEmptyConstraintGrid = (grid: number[][]): MaxHeightByDir[][] =>
+  grid.map((row) =>
+    row.map(() => ({
+      north: -1,
+      east: -1,
+      south: -1,
+      west: -1,
+    }))
+  );
 
-const fillConstraints = (nums: number[][], constraints: maxHeightByDir[][]) => {
+const buildConstraintGrid = (nums: number[][]): MaxHeightByDir[][] => {
+  const constraints = buildEmptyConstraintGrid(nums);
+
   // west->east
   for (let i = 0; i < nums.length; ++i) {
     let max = -1;
@@ -63,17 +60,14 @@ const fillConstraints = (nums: number[][], constraints: maxHeightByDir[][]) => {
       max = Math.max(max, nums[j][i]);
     }
   }
+
+  return constraints;
 };
 
-const getMinGrid = (constraints: maxHeightByDir[][]): number[][] => {
-  const output = [];
-  for (const row of constraints) {
-    output.push(
-      row.map((cell) => Math.min(cell.north, cell.east, cell.south, cell.west))
-    );
-  }
-  return output;
-};
+const getMinGrid = (constraints: MaxHeightByDir[][]): number[][] =>
+  constraints.map((row) =>
+    row.map((cell) => Math.min(cell.north, cell.east, cell.south, cell.west))
+  );
 
 const countTrees = (grid: number[][], minHeights: number[][]): number => {
   let sum = 0;
@@ -91,14 +85,9 @@ const countTrees = (grid: number[][], minHeights: number[][]): number => {
 
 export const d08p1 = (input: string[]): number => {
   const nums = buildGrid(input);
-  const constraints = buildEmptyConstraintGrid(nums);
-  fillConstraints(nums, constraints);
+  const constraints = buildConstraintGrid(nums);
   const minGrid = getMinGrid(constraints);
-  console.log(nums);
-  console.log(minGrid);
   return countTrees(nums, minGrid);
 };
 
-export const d08p2 = (input: string[]): number => {
-  return 0;
-};
+export const d08p2 = (input: string[]): number => 0;
