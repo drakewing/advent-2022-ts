@@ -8,6 +8,7 @@ import { d04p1, d04p2 } from "./solutions/day04";
 // import { d05p1, d05p2 } from "./solutions/day05";
 import { d06p1, d06p2 } from "./solutions/day06";
 import { d07p1, d07p2 } from "./solutions/day07";
+import { d08p1, d08p2 } from "./solutions/day08";
 
 test("d01p1", () => expect(d01p1(prepInput("input/day01.txt"))).toBe(66616));
 test("d01p2", () => expect(d01p2(prepInput("input/day01.txt"))).toBe(199172));
@@ -25,3 +26,5 @@ test("d06p1", () => expect(d06p1(prepInput("input/day06.txt")[0])).toBe(1275));
 test("d06p2", () => expect(d06p2(prepInput("input/day06.txt")[0])).toBe(3605));
 test("d07p1", () => expect(d07p1(prepInput("input/day07.txt"))).toBe(1118405));
 test("d07p2", () => expect(d07p2(prepInput("input/day07.txt"))).toBe(12545514));
+test("d08p1", () => expect(d08p1(prepInput("input/day08.txt"))).toBe(1835));
+// test("d08p2", () => expect(d08p2(prepInput("input/day08.txt"))).toBe(3605));
