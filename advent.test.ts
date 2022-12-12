@@ -30,4 +30,5 @@ test("d07p2", () => expect(d07p2(prepInput("input/day07.txt"))).toBe(12545514));
 test("d08p1", () => expect(d08p1(prepInput("input/day08.txt"))).toBe(1835));
 test("d08p2", () => expect(d08p2(prepInput("input/day08.txt"))).toBe(263670));
 test("d11p1", () => expect(d11p1(prepInput("input/day11.txt"))).toBe(78678));
-// test("d11p2", () => expect(d11p2(prepInput("input/day11.txt"))).toBe(78678));
+test("d11p2", () =>
+  expect(d11p2(prepInput("input/day11.txt"))).toBe(15333249714));
