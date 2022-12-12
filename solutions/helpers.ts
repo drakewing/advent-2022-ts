@@ -75,6 +75,10 @@ export class Queue<T> {
   }
 }
 
+// stole these: https://stackoverflow.com/questions/47047682/least-common-multiple-of-an-array-values-using-euclidean-algorithm
+export const gcd = (a: number, b: number): number => (a ? gcd(b % a, a) : b);
+export const lcm = (a: number, b: number): number => (a * b) / gcd(a, b);
+
 // split input file into array of lines
 export const prepInput = (path: string): string[] =>
   readFileSync(path).toString("utf-8").split("\n").slice(0, -1);
