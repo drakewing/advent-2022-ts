@@ -50,6 +50,20 @@ const findMatch = (grid: Heightmap, name: string): Point => {
   return output;
 };
 
+const findElevations = (grid: Heightmap, elevation: string): Point[] => {
+  const output: Point[] = [];
+
+  grid.forEach((row, y) =>
+    row.forEach((sq, x) => {
+      if (sq.elevation === elevation) {
+        output.push({ x, y });
+      }
+    })
+  );
+
+  return output;
+};
+
 const getCandidateMoves = (grid: Heightmap, point: Point): Point[] => {
   const choices = [
     { x: point.x - 1, y: point.y },
@@ -79,11 +93,13 @@ const canMove = (grid: Heightmap, from: Point, to: Point): boolean => {
 const exhaustPaths = (
   grid: Heightmap,
   start: Point,
-  curPathDistance: number
+  curPathDistance: number,
+  minSoFar?: number
 ) => {
   // should we even consider this square?
   if (grid[start.y][start.x].fewestSteps <= curPathDistance) return;
   if (grid[start.y][start.x].visited) return;
+  if (curPathDistance >= (minSoFar || Number.MAX_VALUE)) return;
 
   grid[start.y][start.x].fewestSteps = curPathDistance;
 
@@ -114,6 +130,15 @@ export const d12p1 = (input: string[]): number => {
 };
 
 export const d12p2 = (input: string[]): number => {
-  const test = 0;
-  return test;
+  const heightMap = parseInput(input);
+  const possibleStarts = findElevations(heightMap, "a");
+  const end = findMatch(heightMap, "E");
+
+  let minSoFar = Number.MAX_VALUE;
+  possibleStarts.forEach((start) => {
+    exhaustPaths(heightMap, start, 0, minSoFar);
+    minSoFar = heightMap[end.y][end.x].fewestSteps;
+  });
+
+  return minSoFar;
 };

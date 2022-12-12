@@ -29,4 +29,4 @@ console.log(`day 08, part 2: ${d08p2(prepInput("input/day08.txt"))}`);
 console.log(`day 11, part 1: ${d11p1(prepInput("input/day11.txt"))}`);
 console.log(`day 11, part 2: ${d11p2(prepInput("input/day11.txt"))}`);
 console.log(`day 12, part 1: ${d12p1(prepInput("input/day12.txt"))}`);
-// console.log(`day 12, part 2: ${d12p2(prepInput("input/day12_test.txt"))}`);
+console.log(`day 12, part 2: ${d12p2(prepInput("input/day12.txt"))}`);
