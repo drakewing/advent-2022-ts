@@ -12,6 +12,11 @@ interface WorryTest {
   (worry: number): boolean;
 }
 
+// Worry reduction operation
+interface WorryUpdate {
+  (worry: number): number;
+}
+
 interface Monkey {
   inspectionCt: number;
   items: Queue<Item>;
@@ -31,10 +36,12 @@ const parseStartingItems = (line: string): Item[] =>
 
 const parseOp = (parts: string[]): WorryOp => {
   const saved = structuredClone(parts);
+  const lBI = saved[0] === "old" ? undefined : parseInt(saved[0], 10);
+  const rBI = saved[2] === "old" ? undefined : parseInt(saved[2], 10);
 
   return (old: number): number => {
-    const l = saved[0] === "old" ? old : parseInt(saved[0], 10);
-    const r = saved[2] === "old" ? old : parseInt(saved[2], 10);
+    const l = lBI || old;
+    const r = rBI || old;
 
     if (saved[1] === "+") {
       return l + r;
@@ -70,13 +77,19 @@ const buildMonkeys = (input: string[]): Monkey[] => {
   return monkeys;
 };
 
-const takeTurn = (monkey: Monkey, monkeys: Monkey[]) => {
+const takeTurn = (
+  monkey: Monkey,
+  monkeys: Monkey[],
+  reduceWorry?: WorryUpdate
+) => {
   while (!monkey.items.isEmpty()) {
     monkey.inspectionCt++;
 
     const item = monkey.items.dequeue();
     item.worry = monkey.op(item.worry);
-    item.worry = Math.floor(item.worry / 3);
+    if (reduceWorry) {
+      item.worry = reduceWorry(item.worry);
+    }
 
     if (monkey.test(item.worry)) {
       monkeys[monkey.trueTarget].items.enqueue(item);
@@ -86,15 +99,20 @@ const takeTurn = (monkey: Monkey, monkeys: Monkey[]) => {
   }
 };
 
-const processRounds = (monkeys: Monkey[], rounds: number) => {
+const processRounds = (
+  monkeys: Monkey[],
+  rounds: number,
+  reduceWorry?: WorryUpdate
+) => {
   for (let i = 0; i < rounds; i++) {
-    monkeys.forEach((monkey) => takeTurn(monkey, monkeys));
+    // console.log(i);
+    monkeys.forEach((monkey) => takeTurn(monkey, monkeys, reduceWorry));
   }
 };
 
 export const d11p1 = (input: string[]): number => {
   const monkeys = buildMonkeys(input);
-  processRounds(monkeys, 20);
+  processRounds(monkeys, 20, (worry) => Math.floor(worry / 3));
 
   const inspectionCts = monkeys
     .map((monkey) => monkey.inspectionCt)
@@ -103,4 +121,13 @@ export const d11p1 = (input: string[]): number => {
   return inspectionCts[0] * inspectionCts[1];
 };
 
-export const d11p2 = (input: string[]): number => 0;
+export const d11p2 = (input: string[]): number => {
+  const monkeys = buildMonkeys(input);
+  processRounds(monkeys, 1000);
+
+  const inspectionCts = monkeys
+    .map((monkey) => monkey.inspectionCt)
+    .sort((a, b) => b - a);
+
+  return inspectionCts[0] * inspectionCts[1];
+};
