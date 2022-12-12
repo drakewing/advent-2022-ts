@@ -65,7 +65,8 @@ const getCandidateMoves = (grid: Heightmap, point: Point): Point[] => {
       choice.y < grid.length &&
       choice.x >= 0 &&
       choice.x < grid[0].length &&
-      !grid[choice.y][choice.x].visited
+      !grid[choice.y][choice.x].visited &&
+      canMove(grid, point, choice)
   );
 };
 
@@ -81,7 +82,7 @@ const exhaustPaths = (
   curPathDistance: number
 ) => {
   // should we even consider this square?
-  if (grid[start.y][start.x].fewestSteps < curPathDistance) return;
+  if (grid[start.y][start.x].fewestSteps <= curPathDistance) return;
   if (grid[start.y][start.x].visited) return;
 
   grid[start.y][start.x].fewestSteps = curPathDistance;
@@ -97,8 +98,6 @@ const exhaustPaths = (
     candidate;
     candidate = candidates.pop()
   ) {
-    if (!canMove(grid, start, candidate)) continue;
-
     exhaustPaths(grid, candidate, curPathDistance + 1);
   }
 
