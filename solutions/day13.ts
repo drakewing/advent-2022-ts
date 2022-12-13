@@ -1,8 +1,7 @@
-// which half of the packet was smaller?
 enum ComparisonResult {
-  RightOrder = "Right",
-  WrongOrder = "Wrong",
-  Inconclusive = "No Idea",
+  RightOrder = -1,
+  WrongOrder = 1,
+  Inconclusive = 0,
 }
 
 interface NestedArray<T> extends Array<T | NestedArray<T>> {}
@@ -78,17 +77,18 @@ const compareSignals = (
   if (right.length === 0) return ComparisonResult.WrongOrder;
   if (left.length === 0) return ComparisonResult.RightOrder;
 
-  // both are numbers
+  let result: ComparisonResult;
   if (typeof left[0] === "number" && typeof right[0] === "number") {
-    const result = comparePackets(left[0], right[0]);
-    if (result !== ComparisonResult.Inconclusive) return result;
-    return compareSignals(left.slice(1), right.slice(1));
+    result = comparePackets(left[0], right[0]);
+  } else {
+    const { LItem, RItem } = wrapInt(left[0], right[0]);
+    result = compareSignals(LItem, RItem);
   }
 
-  // one or both are arrays
-  const { LItem, RItem } = wrapInt(left[0], right[0]);
-  const result = compareSignals(LItem, RItem);
-  if (result !== ComparisonResult.Inconclusive) return result;
+  if (result !== ComparisonResult.Inconclusive) {
+    return result;
+  }
+
   return compareSignals(left.slice(1), right.slice(1));
 };
 
@@ -99,17 +99,31 @@ export const d13p1 = (input: string[]): number => {
 
   const inOrder: number[] = [];
 
-  let j = 1;
   for (let i = 0; i < signals.length; i += 2) {
     const result = compareSignals(signals[i], signals[i + 1]);
-    if (result === ComparisonResult.RightOrder) inOrder.push(j);
-    j++;
+    if (result === ComparisonResult.RightOrder) {
+      inOrder.push(Math.floor(i / 2) + 1);
+    }
   }
 
   return inOrder.reduce((acc, val) => acc + val, 0);
 };
 
 export const d13p2 = (input: string[]): number => {
-  const test = 0;
-  return test;
+  const signals: Array<NestedArray<number>> = input
+    .filter((line) => line !== "")
+    .map((line) => parseLine(line))
+    .concat([[[2]], [[6]]])
+    .sort((a, b) => compareSignals(a, b));
+
+  const l =
+    signals.findIndex(
+      (val) => compareSignals(val, [[2]]) === ComparisonResult.Inconclusive
+    ) + 1;
+  const r =
+    signals.findIndex(
+      (val) => compareSignals(val, [[6]]) === ComparisonResult.Inconclusive
+    ) + 1;
+
+  return l * r;
 };
