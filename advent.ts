@@ -10,6 +10,7 @@ import { d08p1, d08p2 } from "./solutions/day08";
 import { d11p1, d11p2 } from "./solutions/day11";
 import { d12p1, d12p2 } from "./solutions/day12";
 import { d13p1, d13p2 } from "./solutions/day13";
+import { d14p1, d14p2 } from "./solutions/day14";
 
 console.log(`day 01, part 1: ${d01p1(prepInput("input/day01.txt"))}`);
 console.log(`day 01, part 2: ${d01p2(prepInput("input/day01.txt"))}`);
@@ -31,6 +32,7 @@ console.log(`day 11, part 1: ${d11p1(prepInput("input/day11.txt"))}`);
 console.log(`day 11, part 2: ${d11p2(prepInput("input/day11.txt"))}`);
 console.log(`day 12, part 1: ${d12p1(prepInput("input/day12.txt"))}`);
 console.log(`day 12, part 2: ${d12p2(prepInput("input/day12.txt"))}`);
-// console.log(`day 13, part 1: ${d13p1(prepInput("input/day13_debug.txt"))}`);
 console.log(`day 13, part 1: ${d13p1(prepInput("input/day13.txt"))}`);
 console.log(`day 13, part 2: ${d13p2(prepInput("input/day13.txt"))}`);
+console.log(`day 14, part 1: ${d14p1(prepInput("input/day14.txt"))}`);
+console.log(`day 14, part 2: ${d14p2(prepInput("input/day14_test.txt"))}`);

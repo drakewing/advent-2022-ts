@@ -8,7 +8,9 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "no-constant-condition": "off",
     "no-continue": "off",
+    "no-empty": "off",
     "no-plusplus": "off",
     "no-param-reassign": "off",
     "import/prefer-default-export": "off",
