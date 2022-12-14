@@ -40,4 +40,4 @@ test("d12p2", () => expect(d12p2(prepInput("input/day12.txt"))).toBe(399));
 test("d13p1", () => expect(d13p1(prepInput("input/day13.txt"))).toBe(5393));
 test("d13p2", () => expect(d13p2(prepInput("input/day13.txt"))).toBe(26712));
 test("d14p1", () => expect(d14p1(prepInput("input/day14.txt"))).toBe(1016));
-// test("d14p2", () => expect(d14p2(prepInput("input/day14.txt"))).toBe(26712));
+test("d14p2", () => expect(d14p2(prepInput("input/day14.txt"))).toBe(25402));

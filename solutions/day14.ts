@@ -27,10 +27,10 @@ const findBoundaries = (rocks: Point[][]): Point => {
     })
   );
 
-  return maxEdge;
+  return { x: maxEdge.x * 2, y: maxEdge.y };
 };
 
-const buildCave = (maxEdges: Point): Space[][] => {
+const buildCave = (maxEdges: Point, part2?: boolean): Space[][] => {
   const output: Space[][] = [];
 
   for (let y = 0; y <= maxEdges.y; y++) {
@@ -40,6 +40,14 @@ const buildCave = (maxEdges: Point): Space[][] => {
       row.push(Space.Empty);
     }
 
+    output.push(row);
+  }
+
+  if (part2) {
+    const row: Space[] = [];
+    for (let x = 0; x <= maxEdges.x; x++) {
+      row.push(Space.Rock);
+    }
     output.push(row);
   }
 
@@ -77,13 +85,14 @@ const fillSegment = (cave: Space[][], from: Point, to: Point) => {
 
 // returns true when new sand comes to a rest
 const pourSand = (cave: Space[][]): boolean => {
-  const newPoint = findRestPoint(cave, { x: 500, y: 1 });
+  const newPoint = findRestPoint(cave, { x: 500, y: 0 });
   if (newPoint.x === -1) {
     return false;
   }
 
   cave[newPoint.y][newPoint.x] = Space.Sand;
-  return true;
+
+  return !(newPoint.y === 0 && newPoint.x === 500);
 };
 
 // returns {x: -1, y: -1} when sand falls off the grid
@@ -146,11 +155,26 @@ export const d14p1 = (input: string[]): number => {
   fillRocks(cave, rockPaths);
 
   while (pourSand(cave)) {}
-  // cave.map((row) => console.log(JSON.stringify(row.slice(480))));
+
   return sumSand(cave);
 };
 
 export const d14p2 = (input: string[]): number => {
-  const test = 0;
-  return test;
+  const rockPaths: Point[][] = input.map((line) =>
+    line.split(" -> ").map((rawPoint) => {
+      const parts = rawPoint.split(",");
+      return {
+        x: parseInt(parts[0], 10),
+        y: parseInt(parts[1], 10),
+      };
+    })
+  );
+
+  const maxEdges = findBoundaries(rockPaths);
+  const cave = buildCave({ x: maxEdges.x, y: maxEdges.y }, true);
+  fillRocks(cave, rockPaths);
+
+  while (pourSand(cave)) {}
+
+  return sumSand(cave);
 };
