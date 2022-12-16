@@ -90,22 +90,35 @@ const parseInput = (input: string[]): Reading[] =>
       },
     }));
 
-export const d15p1 = (input: string[]): number => {
-  const pairs = parseInput(input);
-  const distances = pairs.map((pair) => ({
-    sensor: pair.sensor,
-    distance: calcManhattanDistance(pair.beacon, pair.sensor),
-  }));
-  return countRuledOutSquares(2000000, pairs, distances);
-};
+const getBoundarySquares = (sensorRange: SensorRange): Point[] => {
+  const boundarySquares: Point[] = [];
+  const boundaryDistance = sensorRange.distance + 1;
 
-export const d15p1new = (input: string[]): number => {
-  const pairs = parseInput(input);
-  const distances = pairs.map((pair) => ({
-    sensor: pair.sensor,
-    distance: calcManhattanDistance(pair.beacon, pair.sensor),
-  }));
-  return countRuledOutSquares(2000000, pairs, distances);
+  for (let ydist = boundaryDistance; ydist >= 0; ydist--) {
+    const xdist = boundaryDistance - ydist;
+
+    boundarySquares.push({
+      x: sensorRange.sensor.x - xdist,
+      y: sensorRange.sensor.y - ydist,
+    });
+
+    boundarySquares.push({
+      x: sensorRange.sensor.x + xdist,
+      y: sensorRange.sensor.y - ydist,
+    });
+
+    boundarySquares.push({
+      x: sensorRange.sensor.x - xdist,
+      y: sensorRange.sensor.y + ydist,
+    });
+
+    boundarySquares.push({
+      x: sensorRange.sensor.x + xdist,
+      y: sensorRange.sensor.y + ydist,
+    });
+  }
+
+  return boundarySquares;
 };
 
 // check sensorRange MD + 1
@@ -113,46 +126,11 @@ const checkBoundariesForInhabitableSpace = (
   sensorRange: SensorRange,
   distances: SensorRange[]
 ): Point | null => {
-  const boundaryDistance = sensorRange.distance + 1;
+  const boundarySquares = getBoundarySquares(sensorRange);
 
-  for (let ydist = boundaryDistance; ydist >= 0; ydist--) {
-    const xdist = boundaryDistance - ydist;
-    // north
-    const nwest = {
-      x: sensorRange.sensor.x - xdist,
-      y: sensorRange.sensor.y - ydist,
-    };
-
-    if (!isPointUninhabitable(nwest, distances)) {
-      return nwest;
-    }
-
-    const neast = {
-      x: sensorRange.sensor.x + xdist,
-      y: sensorRange.sensor.y - ydist,
-    };
-
-    if (!isPointUninhabitable(neast, distances)) {
-      return neast;
-    }
-
-    // south
-    const swest = {
-      x: sensorRange.sensor.x - xdist,
-      y: sensorRange.sensor.y + ydist,
-    };
-
-    if (!isPointUninhabitable(swest, distances)) {
-      return swest;
-    }
-
-    const seast = {
-      x: sensorRange.sensor.x + xdist,
-      y: sensorRange.sensor.y + ydist,
-    };
-
-    if (!isPointUninhabitable(seast, distances)) {
-      return seast;
+  for (let i = 0; i < boundarySquares.length; i++) {
+    if (!isPointUninhabitable(boundarySquares[i], distances)) {
+      return boundarySquares[i];
     }
   }
 
@@ -162,6 +140,15 @@ const checkBoundariesForInhabitableSpace = (
 // lower bound is always 0
 const isPosWithinBounds = (pos: Point, upperBound: number): boolean =>
   pos.x >= 0 && pos.x <= upperBound && pos.y >= 0 && pos.y <= upperBound;
+
+export const d15p1 = (input: string[]): number => {
+  const pairs = parseInput(input);
+  const distances = pairs.map((pair) => ({
+    sensor: pair.sensor,
+    distance: calcManhattanDistance(pair.beacon, pair.sensor),
+  }));
+  return countRuledOutSquares(2000000, pairs, distances);
+};
 
 export const d15p2 = (input: string[], maxCoord: number): number => {
   const pairs = parseInput(input);
