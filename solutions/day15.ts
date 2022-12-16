@@ -31,35 +31,49 @@ const calcBounds = (readings: Reading[]): [number, number] => {
 const arePointsEqual = (a: Point, b: Point): boolean =>
   a.x === b.x && a.y === b.y;
 
-const isPointInhabited = (point: Point, pairs: Reading[]): boolean =>
+const isPointUninhabited = (point: Point, pairs: Reading[]): boolean =>
   pairs.filter(
     (pair) =>
       arePointsEqual(point, pair.beacon) || arePointsEqual(point, pair.sensor)
-  ).length >= 1;
+  ).length === 0;
 
-const countUninhabitableSquares = (
+const isPointUninhabitable = (
+  point: Point,
+  distances: SensorRange[]
+): boolean => {
+  for (let j = 0; j < distances.length; j++) {
+    const md = calcManhattanDistance(point, distances[j].sensor);
+
+    if (md <= distances[j].distance) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const countRuledOutSquares = (
   y: number,
   pairs: Reading[],
   distances: SensorRange[]
 ): number => {
   const bounds = calcBounds(pairs);
-  let uninhabitableSquares = 0;
   const edgeBuffer =
     distances.reduce((acc, dist) => Math.max(acc, dist.distance), 0) + 1;
+  let ruledOutSquares = 0;
 
   for (let i = bounds[0] - edgeBuffer; i < bounds[1] + edgeBuffer; i++) {
-    for (let j = 0; j < distances.length; j++) {
-      const curPoint = { x: i, y };
-      const md = calcManhattanDistance(curPoint, distances[j].sensor);
+    const curPoint = { x: i, y };
 
-      if (md <= distances[j].distance && !isPointInhabited(curPoint, pairs)) {
-        uninhabitableSquares++;
-        break;
-      }
+    if (
+      isPointUninhabitable(curPoint, distances) &&
+      isPointUninhabited(curPoint, pairs)
+    ) {
+      ruledOutSquares++;
     }
   }
 
-  return uninhabitableSquares;
+  return ruledOutSquares;
 };
 
 const parseInput = (input: string[]): Reading[] =>
@@ -82,10 +96,86 @@ export const d15p1 = (input: string[]): number => {
     sensor: pair.sensor,
     distance: calcManhattanDistance(pair.beacon, pair.sensor),
   }));
-  return countUninhabitableSquares(2000000, pairs, distances);
+  return countRuledOutSquares(2000000, pairs, distances);
 };
 
-export const d15p2 = (input: string[]): number => {
-  const test = 0;
-  return test;
+export const d15p1new = (input: string[]): number => {
+  const pairs = parseInput(input);
+  const distances = pairs.map((pair) => ({
+    sensor: pair.sensor,
+    distance: calcManhattanDistance(pair.beacon, pair.sensor),
+  }));
+  return countRuledOutSquares(2000000, pairs, distances);
+};
+
+// check sensorRange MD + 1
+const checkBoundariesForInhabitableSpace = (
+  sensorRange: SensorRange,
+  distances: SensorRange[]
+): Point | null => {
+  const boundaryDistance = sensorRange.distance + 1;
+
+  for (let ydist = boundaryDistance; ydist >= 0; ydist--) {
+    const xdist = boundaryDistance - ydist;
+    // north
+    const nwest = {
+      x: sensorRange.sensor.x - xdist,
+      y: sensorRange.sensor.y - ydist,
+    };
+
+    if (!isPointUninhabitable(nwest, distances)) {
+      return nwest;
+    }
+
+    const neast = {
+      x: sensorRange.sensor.x + xdist,
+      y: sensorRange.sensor.y - ydist,
+    };
+
+    if (!isPointUninhabitable(neast, distances)) {
+      return neast;
+    }
+
+    // south
+    const swest = {
+      x: sensorRange.sensor.x - xdist,
+      y: sensorRange.sensor.y + ydist,
+    };
+
+    if (!isPointUninhabitable(swest, distances)) {
+      return swest;
+    }
+
+    const seast = {
+      x: sensorRange.sensor.x + xdist,
+      y: sensorRange.sensor.y + ydist,
+    };
+
+    if (!isPointUninhabitable(seast, distances)) {
+      return seast;
+    }
+  }
+
+  return null;
+};
+
+// lower bound is always 0
+const isPosWithinBounds = (pos: Point, upperBound: number): boolean =>
+  pos.x >= 0 && pos.x <= upperBound && pos.y >= 0 && pos.y <= upperBound;
+
+export const d15p2 = (input: string[], maxCoord: number): number => {
+  const pairs = parseInput(input);
+  const distances = pairs.map((pair) => ({
+    sensor: pair.sensor,
+    distance: calcManhattanDistance(pair.beacon, pair.sensor),
+  }));
+
+  for (let i = 0; i < distances.length; i++) {
+    const hasit = checkBoundariesForInhabitableSpace(distances[i], distances);
+    if (hasit !== null && isPosWithinBounds(hasit, maxCoord)) {
+      return hasit.x * 4000000 + hasit.y;
+    }
+  }
+
+  return 0;
 };
