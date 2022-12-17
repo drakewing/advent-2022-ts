@@ -12,6 +12,7 @@ import { d12p1, d12p2 } from "./solutions/day12";
 import { d13p1, d13p2 } from "./solutions/day13";
 import { d14p1, d14p2 } from "./solutions/day14";
 import { d15p1, d15p2 } from "./solutions/day15";
+import { d16p1, d16p2 } from "./solutions/day16";
 
 console.log(`day 01, part 1: ${d01p1(prepInput("input/day01.txt"))}`);
 console.log(`day 01, part 2: ${d01p2(prepInput("input/day01.txt"))}`);
@@ -37,5 +38,10 @@ console.log(`day 13, part 1: ${d13p1(prepInput("input/day13.txt"))}`);
 console.log(`day 13, part 2: ${d13p2(prepInput("input/day13.txt"))}`);
 console.log(`day 14, part 1: ${d14p1(prepInput("input/day14.txt"))}`);
 console.log(`day 14, part 2: ${d14p2(prepInput("input/day14.txt"))}`);
-console.log(`day 15, part 1: ${d15p1(prepInput("input/day15.txt"))}`);
-console.log(`day 15, part 2: ${d15p2(prepInput("input/day15.txt"), 4000000)}`);
+// console.log(`day 15, part 1: ${d15p1(prepInput("input/day15.txt"))}`);
+// console.log(`day 15, part 2: ${d15p2(prepInput("input/day15.txt"), 4000000)}`);
+console.log(`day 16, part 1: ${d16p1(prepInput("input/day16.txt"))}`);
+// console.log(
+//   `day 16, part 1: ${d16p1(prepInput("input/day16_test_debug.txt"))}`
+// );
+console.log(`day 16, part 2: ${d16p2(prepInput("input/day16_test.txt"))}`);

@@ -6,3 +6,4 @@ build/
 node_modules/
 .vscode/
 debug.ts
+input/day16_test_debug.txt
